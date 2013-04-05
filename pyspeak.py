@@ -7,7 +7,7 @@ API_ADDRESS = 'http://api.thingspeak.com/' # The URL of your ThingSpeak API.
 
 def read(url, **kwargs):
     '''
-    Take a URL and returns a JSON object with the response
+    Takes a URL and returns a JSON object with the response
     '''
     try:
         response =  urllib.request.urlopen(url, kwargs)
