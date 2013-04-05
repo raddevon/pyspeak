@@ -4,14 +4,18 @@ PySpeak is an interface to the ThingSpeak API. Before using it, change the `API_
 
 PySpeak provides two functions:
 
-```python read_channel(channel_id, last_entry=False, **kwargs)```
+```python 
+read_channel(channel_id, last_entry=False, **kwargs)
+```
 Parameters:
 'channel_id'- the id of a ThingSpeak channel
 'last_entry'- Pass True to get only the most recent entry
 
 Returns the JSON response
 
-```python read_channel(channel_id, field_id, last_entry=False, **kwargs)```
+```python 
+read_channel(channel_id, field_id, last_entry=False, **kwargs)
+```
 Parameters:
 'channel_id'- the id of a ThingSpeak channel
 'field_id'- the id of a field in the given channel
