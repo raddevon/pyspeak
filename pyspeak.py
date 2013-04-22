@@ -9,8 +9,8 @@ except:
 
 
 class Channel:
-    def __init__(self, id, url='https://api.thingspeak.com', read_key='', write_key=''):
-        self.id = id
+    def __init__(self, channel_id, url='https://api.thingspeak.com', read_key='', write_key=''):
+        self.channel_id = channel_id
         self.url = url
         self.read_key = read_key
         self.write_key = write_key
@@ -30,14 +30,15 @@ class Channel:
         if last_entry: endpoint = 'feed/last.{}'.format(fmt)
         else: endpoint = 'feed.{}'.format(fmt)
 
-        url = '{}/channels/{}/{}'.format(self.url, self.id, endpoint)
-        print url
+        url = '{}/channels/{}/{}'.format(self.url, self.channel_id, endpoint)
+        print(url)
         resp = requests.get(url, params=opts)
         if resp.status_code != requests.codes.ok:
-            print "ERROR - Response was not ok", resp.status_code
+            print("ERROR - Response was not ok", resp.status_code)
             exit()
 
-        return resp
+        if fmt == 'json':
+            return resp.json()
 
     def get_field_feed(self, field_id, last_entry=False, fmt='json', opts={}):
         """
@@ -54,14 +55,14 @@ class Channel:
         if last_entry: endpoint = '{}/last.{}'.format(field_id, fmt)
         else: endpoint = '{}.{}'.format(field_id, fmt)
 
-        url = '{}/channels/{}/field/{}'.format(self.url, self.id, endpoint)
-        print url
+        url = '{}/channels/{}/field/{}'.format(self.url, self.channel_id, endpoint)
         resp = requests.get(url, params=opts)
         if resp.status_code != requests.codes.ok:
-            print "ERROR - Response was not ok", resp.status_code
+            print("ERROR - Response was not ok", resp.status_code)
             exit()
 
-        return resp
+        if fmt == 'json':
+            return resp.json()
 
     def update_channel(self, opts):
         """
@@ -71,7 +72,7 @@ class Channel:
         if self.write_key != '':
             opts['key'] = self.write_key
         else:
-            print "No Write Key available for channel"
+            print("No Write Key available for channel")
             return False
 
 
@@ -79,7 +80,7 @@ class Channel:
         resp = requests.post(url, data=opts)
 
         if resp.status_code != requests.codes.ok:
-            print "ERROR - Response was not ok", resp.status_code
+            print("ERROR - Response was not ok", resp.status_code)
             exit()
 
         return resp
