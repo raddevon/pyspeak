@@ -5,8 +5,8 @@ PySpeak is an interface to the ThingSpeak API.
 Create a new object with
 ```python
 obj = pyspeak.Channel(id, [url], [read_key], [write_key])
-* The default url for a new channel is api.thingspeak.com
 ```
+* The default url for a new channel is api.thingspeak.com
 
 Object methods are provided for reading a channel, reading a field, and updating.
 
