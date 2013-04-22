@@ -1,0 +1,4 @@
+distribute==0.6.27
+py==1.4.13
+pytest==2.3.4
+simplejson==3.1.3
