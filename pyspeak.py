@@ -1,6 +1,6 @@
 # Gets data from the ThingSpeak API
 
-import urllib.request, urllib.parse
+import requests
 
 try:
     import json
@@ -8,81 +8,79 @@ except:
     import simplejson as json
 
 
-class ThingSpeak:
-    def __init__(self, read_key='', write_key=''):
-        self.API = 'http://api.thingspeak.com/'
-        self.ready_key = read_key
+class Channel:
+    def __init__(self, channel_id, url='https://api.thingspeak.com', read_key='', write_key=''):
+        self.channel_id = channel_id
+        self.url = url
+        self.read_key = read_key
         self.write_key = write_key
-    
-    def get_channel(self, channel_id, last_entry=False, fmt='json', opts={}):
-        """
-        Parameters:
-        channel_id (int or str) - The id of the channel to be retrieved
-        last_entry (bool) - If True, only the most recent value will be returned
-        fmt (str) - json, csv, or xml. Returns the data as on object of the
-            given type
-        opts (dict) - A dict of optional values to be passed via url params
-        """
-        if last_entry: endpoint = 'last.{}'.format(fmt)
-        else: endpoint = 'feed.{}'.format(fmt)
-        
-        url = '{}channels/{}/{}'.format(self.API, channel_id, endpoint)
-        if opts:
-            queries = urllib.parse.urlencode(opts)
-            url = '{}?{}'.format(url, queries)
 
-        req = urllib.request.Request(url)
-        response = urllib.request.urlopen(req)
-        encoding = response.headers.get_content_charset()
-        result = response.read().decode(encoding)
-        
-        if fmt == 'json':
-            result = json.loads(result)
-        
-        return result
-    
-    def get_field(self, channel_id, field_id, last_entry=False, fmt='json', opts={}):
+    def get_channel_feed(self, last_entry=False, fmt='json', opts={}):
+        # example: http://api.thingspeak.com/channels/9/feed.json
         """
         Parameters:
-        channel_id (int or str) - The id of the channel to be retrieved
-        field_id (int or str) - The id of the field to be retrieved
         last_entry (bool) - If True, only the most recent value will be returned
         fmt (str) - json, csv, or xml. Returns the data as on object of the
             given type
         opts (dict) - A dict of optional values to be passed via url params
         """
+        if self.read_key != '':
+            opts['key'] = self.read_key
+
+        if last_entry: endpoint = 'feed/last.{}'.format(fmt)
+        else: endpoint = 'feed.{}'.format(fmt)
+
+        url = '{}/channels/{}/{}'.format(self.url, self.channel_id, endpoint)
+        print(url)
+        resp = requests.get(url, params=opts)
+        if resp.status_code != requests.codes.ok:
+            print("ERROR - Response was not ok", resp.status_code)
+            exit()
+
+        if fmt == 'json':
+            return resp.json()
+
+    def get_field_feed(self, field_id, last_entry=False, fmt='json', opts={}):
+        """
+        Parameters:
+        field_id (int) - The id of the field to be retrieved
+        last_entry (bool) - If True, only the most recent value will be returned
+        fmt (str) - json, csv, or xml. Returns the data as on object of the
+            given type
+        opts (dict) - A dict of optional values to be passed via url params
+        """
+        if self.read_key != '':
+            opts['key'] = self.read_key
+
         if last_entry: endpoint = '{}/last.{}'.format(field_id, fmt)
         else: endpoint = '{}.{}'.format(field_id, fmt)
-        
-        url = '{}channels/{}/field/{}'.format(self.API, channel_id, endpoint)
-        if opts:
-            queries = urllib.parse.urlencode(opts)
-            url = '{}?{}'.format(url, queries)
-        
-        req = urllib.request.Request(url)
-        response = urllib.request.urlopen(req)
-        encoding = response.headers.get_content_charset()
-        result = response.read().decode(encoding)
-        
+
+        url = '{}/channels/{}/field/{}'.format(self.url, self.channel_id, endpoint)
+        resp = requests.get(url, params=opts)
+        if resp.status_code != requests.codes.ok:
+            print("ERROR - Response was not ok", resp.status_code)
+            exit()
+
         if fmt == 'json':
-            result = json.loads(result)
-        
-        return result
+            return resp.json()
 
     def update_channel(self, opts):
         """
         Parameters:
         opts (dict) - A dict of values to be passed vie url params
         """
-        if not 'key' in opts:
-            if not self.write_key:
-                raise ValueError('A write key is required to update a channel')
-            else: opts['key'] = self.write_key
+        if self.write_key != '':
+            opts['key'] = self.write_key
+        else:
+            print("No Write Key available for channel")
+            return False
 
-        opts = urllib.parse.urlencode(ops)
-        url = '{}/update?{}'.format(self.API, opts)
-        req = urllib.request.Request(url)
-        response = urllib.request.urlopen(req)
-        result = response.read()
 
-        return result
+        url = '{}/update'.format(self.url)
+        resp = requests.post(url, data=opts)
+
+        if resp.status_code != requests.codes.ok:
+            print("ERROR - Response was not ok", resp.status_code)
+            exit()
+
+        return resp
