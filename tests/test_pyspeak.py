@@ -9,6 +9,14 @@ class TestPySpeak:
         test_channel_feed = self.test_channel.get_channel_feed()
         assert ( ( type(test_channel_feed) == dict ) & ( len(test_channel_feed) > 0 ) )
 
+    # def test_get_channel_feed_last_is_dictionary(self):
+    #     test_channel_feed = self.test_channel.get_channel_feed(last_entry=True)
+    #     assert ( ( type(test_channel_feed) == dict ) & ( len(test_channel_feed) == 1 ) )
+
     def test_get_field_feed_is_dictionary(self):
         test_field_feed = self.test_channel.get_field_feed('field2')
         assert ( ( type(test_field_feed) == dict ) & ( len(test_field_feed) > 0 ) )
+
+    # def test_get_field_feed_last_is_dictionary(self):
+    #     test_field_feed = self.test_channel.get_field_feed('field2', last_entry=True)
+    #     assert ( ( type(test_field_feed) == dict ) & ( len(test_field_feed) == 1 ) )

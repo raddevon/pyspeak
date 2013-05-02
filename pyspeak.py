@@ -39,6 +39,8 @@ class Channel:
 
         if fmt == 'json':
             return resp.json()
+        else:
+            return resp.text
 
     def get_field_feed(self, field_id, last_entry=False, fmt='json', opts={}):
         """
@@ -63,6 +65,8 @@ class Channel:
 
         if fmt == 'json':
             return resp.json()
+        else:
+            return resp.text
 
     def update_channel(self, opts):
         """
