@@ -23,3 +23,6 @@ Object methods are provided for reading a channel, reading a field, and updating
 
 `update_channel(self, opts)`
 * opts (dict) - A dict of values to be passed vie url params
+
+##Testing
+If you want to run the test for PySpeak, be sure to run `pip install -r requirements.txt` to download the requirements first. You'll also need to take a look at the config.sample.py file, fill it with your channel info, and rename it to `config.py`.
