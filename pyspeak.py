@@ -11,7 +11,7 @@ except:
 class Channel:
     def __init__(self, channel_id, url='https://api.thingspeak.com', read_key='', write_key=''):
         self.channel_id = channel_id
-        self.url = url
+        self.url = url.rstrip('/')
         self.read_key = read_key
         self.write_key = write_key
 
@@ -45,7 +45,7 @@ class Channel:
     def get_field_feed(self, field_id, last_entry=False, fmt='json', opts={}):
         """
         Parameters:
-        field_id (int) - The id of the field to be retrieved
+        field_id (int or string) - The id or name of the field to be retrieved
         last_entry (bool) - If True, only the most recent value will be returned
         fmt (str) - json, csv, or xml. Returns the data as on object of the
             given type
@@ -53,6 +53,11 @@ class Channel:
         """
         if self.read_key != '':
             opts['key'] = self.read_key
+
+        if isinstance(field_id, str) and field_id[-1].isdigit():
+            field_id = field_id[-1]
+        elif isinstance(field_id, str):
+            raise TypeError('Unable to derive a numerical field ID from the string argument.')
 
         if last_entry: endpoint = '{}/last.{}'.format(field_id, fmt)
         else: endpoint = '{}.{}'.format(field_id, fmt)
