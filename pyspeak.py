@@ -1,11 +1,8 @@
 # Gets data from the ThingSpeak API
 
 import requests
-
-try:
-    import json
-except:
-    import simplejson as json
+import json
+from time import sleep
 
 
 class Channel:
@@ -93,3 +90,18 @@ class Channel:
             exit()
 
         return resp
+
+class PostChannel(Channel):
+    """
+    A PySpeak channel which can also post the resulting JSON data to a URL
+    """
+    def __init__(self, channel_id, dest_url, url='https://api.thingspeak.com',  read_key='', write_key=''):
+        super().__init__(channel_id, url, read_key, write_key)
+        self.dest_url = dest_url
+
+    def post_data(self, interval):
+        while not sleep(interval):
+            channel_data = json.dumps(self.get_channel_feed())
+            payload = {'json_data': channel_data}
+            r = requests.post(self.dest_url, data=payload)
+            print(r.json())
