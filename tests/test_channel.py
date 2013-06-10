@@ -2,6 +2,7 @@ import pyspeak
 from tests.config import API, CHANNEL, READ_KEY, WRITE_KEY, FIELDS
 import random
 
+
 class TestPySpeak:
 
     def setup(self):
@@ -10,7 +11,7 @@ class TestPySpeak:
 
     def generate_random_update_values(self):
         for field in FIELDS:
-            self.updates[field] = random.randint(1,100)
+            self.updates[field] = random.randint(1, 100)
 
     def test_get_channel_feed_is_dictionary(self):
         test_channel_feed = self.test_channel.get_channel_feed()
