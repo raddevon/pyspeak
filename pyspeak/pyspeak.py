@@ -6,11 +6,13 @@ from time import sleep
 
 
 class Channel:
-    def __init__(self, channel_id, url='https://api.thingspeak.com', read_key='', write_key=''):
+    def __init__(self, channel_id, dest_url=None,
+                 url='https://api.thingspeak.com', read_key='', write_key=''):
         self.channel_id = channel_id
         self.url = url.rstrip('/')
         self.read_key = read_key
         self.write_key = write_key
+        self.dest_url = dest_url
 
     def get_channel_feed(self, last_entry=False, fmt='json', opts={}):
         # example: http://api.thingspeak.com/channels/9/feed.json
@@ -90,14 +92,6 @@ class Channel:
             exit()
 
         return resp
-
-class PostChannel(Channel):
-    """
-    A PySpeak channel which can also post the resulting JSON data to a URL
-    """
-    def __init__(self, channel_id, dest_url, url='https://api.thingspeak.com',  read_key='', write_key=''):
-        super().__init__(channel_id, url, read_key, write_key)
-        self.dest_url = dest_url
 
     def post_data(self, interval):
         while not sleep(interval):
