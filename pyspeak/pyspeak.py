@@ -30,7 +30,6 @@ class Channel:
         else: endpoint = 'feed.{}'.format(fmt)
 
         url = '{}/channels/{}/{}'.format(self.url, self.channel_id, endpoint)
-        print(url)
         resp = requests.get(url, params=opts)
         if resp.status_code != requests.codes.ok:
             print("ERROR - Response was not ok", resp.status_code)
@@ -93,9 +92,10 @@ class Channel:
 
         return resp
 
-    def post_data(self, interval):
-        while not sleep(interval):
-            channel_data = json.dumps(self.get_channel_feed())
-            payload = {'json_data': channel_data}
-            r = requests.post(self.dest_url, data=payload)
-            print(r.json())
+    def post_data(self):
+        """
+        Returns the POST request object.
+        """
+        channel_data = json.dumps(self.get_channel_feed())
+        payload = {'json_data': channel_data}
+        return requests.post(self.dest_url, data=payload)
