@@ -1,12 +1,12 @@
-import pyspeak
-from tests.config import API, CHANNEL, READ_KEY, WRITE_KEY, FIELDS
+import pyspeak.pyspeak as pyspeak
+from tests.config import API, CHANNEL, READ_KEY, WRITE_KEY, FIELDS, DEST_URL
 import random
 
 
 class TestPySpeak:
 
     def setup(self):
-        self.test_channel = pyspeak.Channel(CHANNEL, API, READ_KEY, WRITE_KEY)
+        self.test_channel = pyspeak.Channel(CHANNEL, DEST_URL, API, READ_KEY, WRITE_KEY)
         self.updates = dict()
 
     def generate_random_update_values(self):
@@ -30,13 +30,17 @@ class TestPySpeak:
             assert( int(test_json[field]) == self.updates[field] )
 
     def test_update_and_read_field(self):
-        print(self.updates)
         self.generate_random_update_values()
         self.test_channel.update_channel(self.updates)
-        print(self.updates)
         for field in FIELDS:
             test_json = self.test_channel.get_field_feed(field, last_entry=True)
-            print(field)
-            print(test_json[field])
-            print(self.updates[field])
             assert( int(test_json[field]) == self.updates[field] )
+
+    def test_post_pyspeak_data(self):
+        self.generate_random_update_values()
+        source_response = self.test_channel.get_channel_feed()
+        self.test_channel.update_channel(self.updates)
+        dest_response = self.test_channel.post_data()
+        print(dest_response.json()['form']['json_data'])
+        print(source_response)
+        assert( dest_response.json()['form']['json_data'] == source_response )
