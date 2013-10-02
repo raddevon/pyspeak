@@ -2,6 +2,10 @@
 
 PySpeak is an interface to the ThingSpeak API for use with the Python Language.
 
+## Installation
+
+    pip install PySpeak
+
 Create a new object with
 ```python
 obj = pyspeak.Channel(id, [url], [read_key], [write_key])
