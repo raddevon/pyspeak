@@ -13,7 +13,7 @@ setup(name='PySpeak',
       platforms='any',
       install_requires=[
           'distribute==0.6.27',
-          'py==1.4.13',
+          'py==1.10.0',
           'pytest==2.3.4',
           'simplejson==3.1.3',
           'requests==1.2.0'
